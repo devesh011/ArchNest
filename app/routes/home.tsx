@@ -17,8 +17,12 @@ import Footer from "../../components/Footer";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "ArchNest — 2D Floor Plans to 3D Spaces" },
+    {
+      name: "description",
+      content:
+        "Turn a 2D floor plan into a fully rendered 3D space with AI. Upload a plan, get a photorealistic 3D visualization back — no modelling experience needed.",
+    },
   ];
 }
 
