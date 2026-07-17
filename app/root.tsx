@@ -15,6 +15,7 @@ import {
   signIn as puterSignIn,
   signOut as puterSignOut,
 } from "../lib/puter.action";
+import AppSplash from "../components/AppSplash";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,6 +34,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-light-32.png"
+        />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+        <meta name="theme-color" content="#0d9488" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="ArchNest" />
+        <link rel="apple-touch-icon" href="/icon-180.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
@@ -75,6 +93,18 @@ export default function App() {
     refreshAuth();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    import("virtual:pwa-register")
+      .then(({ registerSW }) => {
+        registerSW({ immediate: true });
+      })
+      .catch((e) => {
+        console.warn("PWA service worker registration failed:", e);
+      });
+  }, []);
+
   const signIn = async () => {
     await puterSignIn();
     return await refreshAuth();
@@ -87,6 +117,7 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-background text-foreground relative z-10">
+      <AppSplash />
       <Outlet
         context={{
           ...authState,
@@ -95,7 +126,6 @@ export default function App() {
           signOut,
         }}
       />
-      ;
     </main>
   );
 }
