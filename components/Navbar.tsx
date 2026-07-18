@@ -5,13 +5,18 @@ import Logo from "./ui/Logo";
 import { Sun, Moon, Menu, X, ChartBar, ChevronDown } from "lucide-react";
 import UsageWidget from "../components/ui/UsageWidget";
 import { getAppStorageUsage, getMonthlyUsage } from "../lib/puter.action";
+import { Link } from "react-router";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { isSignedIn, userName, signIn, signOut } =
     useOutletContext<AuthContext>();
 
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("archnest-theme") === "dark",
+  );
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [usageOpen, setUsageOpen] = useState(false);
@@ -19,11 +24,6 @@ const Navbar = () => {
 
   const [usageExpanded, setUsageExpanded] = useState(false);
   const [usage, setUsage] = useState<any>(null);
-
-  const toggleDark = () => {
-    document.documentElement.classList.toggle("dark");
-    setDark(!dark);
-  };
 
   const handleAuthClick = async () => {
     if (isSignedIn) {
@@ -76,6 +76,13 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("archnest-theme", dark ? "dark" : "light");
+  }, [dark]);
+
+  const toggleDark = () => setDark((d) => !d);
+
+  useEffect(() => {
     if (!isSignedIn) return;
     refreshStorage();
   }, [isSignedIn]);
@@ -112,14 +119,14 @@ const Navbar = () => {
           </div>
           <ul className="links">
             {isSignedIn && (
-              <a href="/projects" onClick={goToProjects}>
+              <Link to="/projects" onClick={goToProjects}>
                 Projects
-              </a>
+              </Link>
             )}
-            <a href="/product">Product</a>
-            <a href="/pricing">Pricing</a>
-            <a href="/community">Community</a>
-            <a href="/enterprise">Enterprise</a>
+            <Link to="/product">Product</Link>
+            <Link to="/pricing">Pricing</Link>
+            <Link to="/community">Community</Link>
+            <Link to="/enterprise">Enterprise</Link>
           </ul>
         </div>
         <div className="actions">
@@ -189,28 +196,28 @@ const Navbar = () => {
       {menuOpen && (
         <div className="mobile-menu">
           {isSignedIn && (
-            <a
-              href="/projects"
+            <Link
+              to="/projects"
               onClick={(e) => {
                 goToProjects(e);
                 setMenuOpen(false);
               }}
             >
               Projects
-            </a>
+            </Link>
           )}
-          <a href="/product" onClick={() => setMenuOpen(false)}>
+          <Link to="/product" onClick={() => setMenuOpen(false)}>
             Product
-          </a>
-          <a href="/pricing" onClick={() => setMenuOpen(false)}>
+          </Link>
+          <Link to="/pricing" onClick={() => setMenuOpen(false)}>
             Pricing
-          </a>
-          <a href="/community" onClick={() => setMenuOpen(false)}>
+          </Link>
+          <Link to="/community" onClick={() => setMenuOpen(false)}>
             Community
-          </a>
-          <a href="/enterprise" onClick={() => setMenuOpen(false)}>
+          </Link>
+          <Link to="/enterprise" onClick={() => setMenuOpen(false)}>
             Enterprise
-          </a>
+          </Link>
           <div className="mobile-auth">
             <span className="mobile-greeting">
               {isSignedIn ? (userName ? `Hi, ${userName}` : "Signed in") : ""}
